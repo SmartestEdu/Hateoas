@@ -66,6 +66,17 @@ class ExclusionManager
             return false;
         }
 
+        if (null !== $exclusion) {
+            $exclusionGroups = $exclusion->getNotGroups();
+            $contextGroups = $context->attributes->get('groups')->get();
+            if (
+                is_array($exclusionGroups) &&
+                0 < count(array_intersect($contextGroups, $exclusionGroups))
+            ) {
+                return true;
+            }
+        }
+
         $propertyMetadata = new RelationPropertyMetadata($exclusion);
 
         return $context->getExclusionStrategy()->shouldSkipProperty($propertyMetadata, $context);
